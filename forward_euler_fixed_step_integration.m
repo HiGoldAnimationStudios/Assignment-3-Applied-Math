@@ -20,11 +20,12 @@ function [t_list,X_list,h_avg, num_evals] = forward_euler_fixed_step_integration
 
     N=ceil((tf-t0)/h_ref);
     h_avg=(tf-t0)/N;
+    num_evals=0;
 
-    for i = t0 : h_avg : tf
-        t_list(end+1)=i;
+    for t = t0 : h_avg : tf
+        t_list(end+1)=t;
         X_list(end+1)=XA;
-        [XB,num_evals_i] = forward_euler_step(rate_func_in,t,XA,h);
+        [XB,num_evals_i] = forward_euler_step(rate_func_in,t,XA,h_avg);
         num_evals=num_evals+num_evals_i;
         XA=XB; 
     end

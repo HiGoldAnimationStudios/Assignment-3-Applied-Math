@@ -1,0 +1,27 @@
+function e = local_trunc_error(rate_func_in, X, t_ref, tspan, X0, h_ref)
+    h_values = logspace(-5,1,100);
+
+    e_fw_e = zeros(size(h_values));
+    e_midpoint = zeros(size(h_values));
+    sol = zeros(size(h_values));
+
+    for i = 1:length(h_values)
+        h = h_values(i);
+
+        sol = X(t_ref + h);
+
+        xB_fw_e=forward_euler_fixed_step(rate_func_in,tspan,X0,h_ref);
+        e_fw_e(i) = abs(xB_fw_e - sol);
+        xB_midpoint=explicit_midpoint_step(rate_func_in,tspan,X0,h_ref);
+        e_midpoint(i) = abs(xB_midpoint  - sol);
+
+    end
+
+    loglog_fit(h, sol,varargin)
+    hold on
+    loglog_fit(h, e_fw_e,varargin)
+    loglog_fit(h, e_midpoint,varargin)
+    hold_off
+
+
+end 
