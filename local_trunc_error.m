@@ -33,7 +33,7 @@ function local_trunc_error(rate_func_in, X, t_ref)
     [p2_loc,k2_loc] =loglog_fit(h_values, e_fw_e)
     [p3_loc,k3_loc] =loglog_fit(h_values, e_midpoint)
 
-    figure(2)
+    figure(5)
     loglog(h_values,abs(analytical_value-X0),'go','MarkerFaceColor','g');
     hold on
     loglog(h_values,e_fw_e,'ro','MarkerFaceColor','r');
