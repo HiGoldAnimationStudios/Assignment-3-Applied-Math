@@ -16,8 +16,9 @@ function day10()
     plot(t_list_e2, X_list_e2,"r")
     plot(t_list_m2, X_list_m2,"b")
     
-    t_ref=0.3676767676767;
-    local_trunc_error(@rate_func01, @solution01, t_ref, X0, h_ref);
+    t_ref = 0.3676767676767;
+
+    local_trunc_error(@rate_func01, @solution01, t_ref);
     
 end
 

@@ -1,4 +1,4 @@
-function local_trunc_error(rate_func_in, X, t_ref)
+function global_trunc_error(rate_func_in, X, t_ref)
     h_values = logspace(-5,1,100);
     
     e_fw_e = zeros(size(h_values));
