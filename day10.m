@@ -45,6 +45,8 @@ function day10()
     t_ref = 0.3676767676767;
 
     local_trunc_error(@rate_func01, @solution01, t_ref);
+
+    global_trunc_error(@rate_func01, @solution01, 0, 500);
     
 end
 

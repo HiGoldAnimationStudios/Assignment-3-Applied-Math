@@ -1,46 +1,58 @@
-function global_trunc_error(rate_func_in, X, t_ref)
-    h_values = logspace(-5,1,100);
-    
-    e_fw_e = zeros(size(h_values));
-    
-    e_midpoint = zeros(size(h_values));
-    analytical_value = zeros(size(h_values));
+function global_trunc_error(rate_func_in, X, t_0, t_f)
 
+    h_values = logspace(-4, -1, 100);
+    e_fw_g_e = zeros(size(h_values));
+    g_e_midpoint = zeros(size(h_values));
     %disp(length(h_values))
     %disp(length(e_fw_e))
 
-    X0 = X(t_ref);
+    X_0 = X(t_0);
+    X_f = X(t_f);
 
     for i = 1:length(h_values)
         h = h_values(i);
 
-        analytical_value(i) = X(t_ref + h);
+        t_current = t_0;
+        x_current_fw_e = X_0;
 
-        xB_fw_e =forward_euler_step(rate_func_in,t_ref,X0,h);
-        e_fw_e(i) = abs(xB_fw_e - analytical_value(i));
-        xB_midpoint = explicit_midpoint_step(rate_func_in,t_ref,X0,h);
-        e_midpoint(i) = abs(xB_midpoint  - analytical_value(i));
+        while t_current < t_f
+            if t_current + h > t_f
+                h_step = t_f - t_current;
+            else
+                h_step = h;
+            end
 
-    end
-    
-    disp(size(h_values))
-    disp(size(analytical_value))
-    disp(size(e_fw_e))
-    disp(size(e_midpoint))
+            x_current_fw_e = forward_euler_step(rate_func_in, t_current, x_current_fw_e, h_step);
+            t_current = t_current + h_step;
+        end
 
- 
-    [p1_loc,k1_loc] = loglog_fit(h_values, abs(analytical_value-X0))
-    [p2_loc,k2_loc] =loglog_fit(h_values, e_fw_e)
-    [p3_loc,k3_loc] =loglog_fit(h_values, e_midpoint)
+        t_current = t_0;
+        x_current_mid = X_0;
 
-    figure(2)
-    loglog(h_values,abs(analytical_value-X0),'go','MarkerFaceColor','g');
+        while t_current < t_f
+            if t_current + h > t_f
+                h_step = t_f - t_current;
+            else
+                h_step = h;
+            end
+
+            x_current_mid = explicit_midpoint_step(rate_func_in, t_current, x_current_mid, h_step);
+            t_current = t_current + h_step;
+        end
+
+        e_fw_g_e(i) = abs(x_current_fw_e - X_f);
+        g_e_midpoint(i) = abs(x_current_mid  - X_f);
+
+    end 
+
+    [p2_glob,k2_glob] =loglog_fit(h_values, e_fw_g_e)
+    [p3_glob,k3_glob] =loglog_fit(h_values, g_e_midpoint)
+
+
+    figure(67)
     hold on
-    loglog(h_values,e_fw_e,'ro','MarkerFaceColor','r');
-    loglog(h_values,e_midpoint,'bo','MarkerFaceColor','b');
-
-    
+    loglog(h_values,e_fw_g_e,'ro','MarkerFaceColor','r');
+    loglog(h_values,g_e_midpoint,'bo','MarkerFaceColor','b');
     hold off
-
 
 end 
