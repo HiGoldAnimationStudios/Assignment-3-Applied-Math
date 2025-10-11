@@ -19,7 +19,7 @@
 %OUTPUTS:
 %x: the estimate of the root computed by the function
 % exit_flag: an integer indicating whether or not the solver succeeded
-function [x, exit_flag] = multi_newton_solver_generalized(fun,x_guess,solver_params)
+function [x, exit_flag, num_evals] = multi_newton_solver_generalized(fun,x_guess,solver_params)
 %unpack values from struct (if fields in struct have been set)
     dxtol = 1e-14;
     if isfield(solver_params,'dxtol')
@@ -46,16 +46,19 @@ function [x, exit_flag] = multi_newton_solver_generalized(fun,x_guess,solver_par
     %your code here
     exit_flag=0;
 
+    num_evals=0;
+
     if numerical_diff==0
         %with J given
         [fval, J] = fun(x_guess);
-        
+        num_evals=num_evals+1;
     end
 
     if numerical_diff==1
         %no J
         fval=fun(x_guess);
-        J=approximate_jacobian(fun, x_guess);
+        [J,num_evals_1]=approximate_jacobian(fun, x_guess);
+        num_evals=num_evals+num_evals_1;
     end
 
     delta_x = -J\fval;
@@ -67,13 +70,14 @@ function [x, exit_flag] = multi_newton_solver_generalized(fun,x_guess,solver_par
         if numerical_diff==0
             %with J given
             [fval, J] = fun(x_guess);
-            
+            num_evals=num_evals+1;
         end
     
         if numerical_diff==1
             %no J
             fval=fun(x_guess);
-            J=approximate_jacobian(fun, x_guess);
+            [J,num_evals_1]=approximate_jacobian(fun, x_guess);
+            num_evals=num_evals+num_evals_1;
         end
 
         delta_x = -J\fval;
@@ -96,16 +100,18 @@ end
 %x: the input value of fun that we want to compute the derivative at
 %OUTPUTS:
 %J: approximation of Jacobian of fun at x
-function J = approximate_jacobian(fun,x)
+function [J, num_evals] = approximate_jacobian(fun,x)
 
     %set jacobian matrix size 
     J = zeros(length(fun(x)),length(x));
+    num_evals=0;
 
     for i=1:length(x)
         %calculate column of the jacobian which corresponds to the partial
         %derivatives for given each given set of guesses
-        dfdx=approximate_derivative(fun,x,i);
+        [dfdx,num_evals_i]=approximate_derivative(fun,x,i);
         J(:,i)=dfdx;
+        num_evals=num_evals+num_evals_i;
     end
 end
 
@@ -116,7 +122,7 @@ end
 %x: the input value of fun that we want to compute the derivative at
 %OUTPUTS:
 %dfdx: approximation of fun'(x)
-function dfdx = approximate_derivative(fun,x,i)
+function [dfdx, num_evals] = approximate_derivative(fun,x,i)
 
     %set the step size to be tiny
     delta_x = 1e-6;
@@ -126,7 +132,7 @@ function dfdx = approximate_derivative(fun,x,i)
     %compute the function at different points near x
     f_left = fun(x-delta_x*ei);
     f_right = fun(x+delta_x*ei);
-
+    num_evals=2;
     %approximate the first derivative
     dfdx = (f_right-f_left)/(2*delta_x);
 end

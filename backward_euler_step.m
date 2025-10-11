@@ -21,6 +21,5 @@ function [XB,num_evals] = backward_euler_step(rate_func_in,t,XA,h)
     
     G=@(Xb) XA+h*rate_func_in(t+h,Xb)-Xb;
     
-    [XB,~] = multi_newton_solver_generalized(G,XA,solver_params);
-    num_evals=1;
+    [XB,~,num_evals] = multi_newton_solver_generalized(G,XA,solver_params);
 end

@@ -21,6 +21,5 @@ function [XB,num_evals] = implicit_midpoint_step(rate_func_in,t,XA,h)
     
     G=@(Xb) XA+h*rate_func_in(t+h/2,(XA+Xb)/2)-Xb;
     
-    [XB,~] = multi_newton_solver_generalized(G,XA,solver_params);
-    num_evals=1;
+    [XB,~,num_evals] = multi_newton_solver_generalized(G,XA,solver_params);
 end
