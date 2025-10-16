@@ -12,7 +12,7 @@ function day10()
 
     %local_trunc_error(@rate_func01, @solution01, 0.3);
 
-    global_trunc_error(@rate_func01, @solution01, 0, 50);
+    global_trunc_error(@rate_func01, @solution01, 0, 20);
     
 end
 
