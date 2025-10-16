@@ -1,4 +1,4 @@
-function day10()
+function plot_multi_h_ref()
     tspan=[0,10];
     X0=1;
     h_ref=0.1;
@@ -68,29 +68,6 @@ function day10()
     plot(t_list_mi4, X_list_mi4, 'o-', 'Color',[0.85 0.65 0], 'MarkerSize',5, 'LineWidth',0.5, 'DisplayName','Implicit Midpoint  h=0.4');
     xlabel('t'); ylabel('X(t)'); title('Implicit Midpoint vs. Exact Solution');
     legend('Location','best'); hold off;
-
-    %Plots comparing the numerical solutions to eqn. 5 for a time step of href = .38 and a separate plot for href = .45 (as detailed in the explicit vs. implicit stability section).
-
-    tspan=[0,20];
-    X0=1;
-    h_ref=0.38;
-    [t_list_fe,X_list_fe,~, ~] = fixed_step_integration(@rate_func01,@forward_euler_step,tspan,X0,h_ref);
-    [t_list_be,X_list_be,~, ~] = fixed_step_integration(@rate_func01,@backward_euler_step,tspan,X0,h_ref);
-    [t_list_me,X_list_me,~, ~] = fixed_step_integration(@rate_func01,@explicit_midpoint_step,tspan,X0,h_ref);
-    [t_list_mi,X_list_mi,~, ~] = fixed_step_integration(@rate_func01,@implicit_midpoint_step,tspan,X0,h_ref);
-
-    plot_specific_href(0.38)
-    
-    plot_specific_href(0.45)
-
-    t_ref = 0.38;
-    local_trunc_error(@rate_func01, @solution01, t_ref);
-
-    t_ref=0.45;
-    local_trunc_error(@rate_func01, @solution01, t_ref);
-
-    %global_trunc_error(@rate_func01, @solution01, 0, 50);
-    
 end
 
 function dXdt = rate_func01(t,X)
@@ -99,55 +76,3 @@ end
 function X = solution01(t)
 X = cos(t);
 end
-
-function plot_specific_href(h)
-    % Setup
-    tspan = [0, 20];
-    X0    = 1;
-    
-
-    % High-res exact
-    t_plot = linspace(tspan(1), tspan(2), 600);
-    x_exact = solution01(t_plot);
-
-    % Numerical solutions
-    [t_fe, X_fe] = fixed_step_integration(@rate_func01, @forward_euler_step,     tspan, X0, h);
-    [t_em, X_em] = fixed_step_integration(@rate_func01, @explicit_midpoint_step, tspan, X0, h);
-    [t_be, X_be] = fixed_step_integration(@rate_func01, @backward_euler_step,    tspan, X0, h);
-    [t_im, X_im] = fixed_step_integration(@rate_func01, @implicit_midpoint_step, tspan, X0, h);
-
-    figure('Color','w');
-
-    % ---------- 1) Forward Euler ----------
-    subplot(4,1,1); hold on; grid on;
-    plot(t_plot, x_exact, 'k-', 'LineWidth',0.5, 'DisplayName','Exact');
-    plot(t_fe,   X_fe,   'o-', 'LineWidth',0.5, 'MarkerSize',5, 'Color',[1 0 0], 'DisplayName','Forward Euler');
-    xlabel('t'); ylabel('X(t)');
-    title(sprintf('Forward Euler (h = %.2f)', h))
-    legend('Location','best');
-
-    % ---------- 2) Explicit Midpoint ----------
-    subplot(4,1,2); hold on; grid on;
-    plot(t_plot, x_exact, 'k-', 'LineWidth',0.5, 'DisplayName','Exact');
-    plot(t_em,   X_em,   'o-', 'LineWidth',0.5, 'MarkerSize',5, 'Color',[0 0.5 0], 'DisplayName','Explicit Midpoint');
-    xlabel('t'); ylabel('X(t)');
-    title(sprintf('Explicit Midpoint (h = %.2f)', h))
-    legend('Location','best');
-
-    % ---------- 3) Backward Euler ----------
-    subplot(4,1,3); hold on; grid on;
-    plot(t_plot, x_exact, 'k-', 'LineWidth',0.5, 'DisplayName','Exact');
-    plot(t_be,   X_be,   'o-', 'LineWidth',0.5, 'MarkerSize',5, 'Color',[0 0 1], 'DisplayName','Backward Euler');
-    xlabel('t'); ylabel('X(t)');
-    title(sprintf('Backward Euler (h = %.2f)', h))
-    legend('Location','best');
-
-    % ---------- 4) Implicit Midpoint ----------
-    subplot(4,1,4); hold on; grid on;
-    plot(t_plot, x_exact, 'k-', 'LineWidth',0.5, 'DisplayName','Exact');
-    plot(t_im,   X_im,   'o-', 'LineWidth',0.5, 'MarkerSize',5, 'Color',[0.7 0 0.7], 'DisplayName','Implicit Midpoint');
-    xlabel('t'); ylabel('X(t)');
-    title(sprintf('Implicit Midpoint (h = %.2f)', h))
-    legend('Location','best');
-end
-

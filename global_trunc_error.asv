@@ -31,22 +31,19 @@ function global_trunc_error(rate_func_in, X, t_0, t_f)
             x_current_fw_e = forward_euler_step(rate_func_in, t_current, x_current_fw_e, h_step);
             x_current_ex_mid = explicit_midpoint_step(rate_func_in, t_current, x_current_ex_mid, h_step);
             x_current_bw_e = backward_euler_step(rate_func_in,t_current,x_current_bw_e, h_step);
-            x_current_im_mid = implicit_midpoint_step(rate_func_in, t_current, x_current_im_mid, h_step);
-
+            x_current_im_mid = explicit_midpoint_step(rate_func_in, t_current, x_current_ex_mid, h_step);
             t_current = t_current + h_step;
         end
 
         g_e_e_fw(i) = abs(x_current_fw_e - X_f);
         g_e_ex_m(i) = abs(x_current_ex_mid  - X_f);
         g_e_e_bw(i) = abs(x_current_bw_e - X_f);
-        g_e_im_m(i) = abs(x_current_im_mid  - X_f);
+        g_e_im_m(i) = abs(x_current_ex_mid  - X_f);
 
     end 
 
-    [pfw_glob,kfw_glob] =loglog_fit(h_values, g_e_e_fw)
-    [pex_glob,kex_glob] =loglog_fit(h_values, g_e_ex_m)
-    [pbw_glob,kbw_glob] =loglog_fit(h_values, g_e_e_bw)
-    [pim_glob,kim_glob] =loglog_fit(h_values, g_e_im_m)
+    [p2_glob,k2_glob] =loglog_fit(h_values, g_e_e_fw)
+    [p3_glob,k3_glob] =loglog_fit(h_values, g_e_ex_m)
 
 
     figure(67)

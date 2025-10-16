@@ -1,71 +1,16 @@
 function day10()
-    tspan=[0,10];
-    X0=1;
-    h_ref=0.1;
-    [t_list_fe,X_list_fe,~, ~] = fixed_step_integration(@rate_func01,@forward_euler_step,tspan,X0,h_ref);
-    [t_list_be,X_list_be,~, ~] = fixed_step_integration(@rate_func01,@backward_euler_step,tspan,X0,h_ref);
-    [t_list_me,X_list_me,~, ~] = fixed_step_integration(@rate_func01,@explicit_midpoint_step,tspan,X0,h_ref);
-    [t_list_mi,X_list_mi,~, ~] = fixed_step_integration(@rate_func01,@implicit_midpoint_step,tspan,X0,h_ref);
-
-    h_ref=0.2;
-    [t_list_fe2,X_list_fe2,~, ~] = forward_euler_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
-    [t_list_be2,X_list_be2,~, ~] = fixed_step_integration(@rate_func01,@backward_euler_step,tspan,X0,h_ref);
-    [t_list_me2,X_list_me2,~, ~] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
-    [t_list_mi2,X_list_mi2,~, ~] = fixed_step_integration(@rate_func01,@implicit_midpoint_step,tspan,X0,h_ref);
-
-    h_ref=0.3;
-    [t_list_fe3,X_list_fe3,~, ~] = forward_euler_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
-    [t_list_be3,X_list_be3,~, ~] = fixed_step_integration(@rate_func01,@backward_euler_step,tspan,X0,h_ref);
-    [t_list_me3,X_list_me3,~, ~] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
-    [t_list_mi3,X_list_mi3,~, ~] = fixed_step_integration(@rate_func01,@implicit_midpoint_step,tspan,X0,h_ref);
-
-    h_ref=0.4;
-    [t_list_fe4,X_list_fe4,~, ~] = forward_euler_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
-    [t_list_be4,X_list_be4,~, ~] = fixed_step_integration(@rate_func01,@backward_euler_step,tspan,X0,h_ref);
-    [t_list_me4,X_list_me4,~, ~] = explicit_midpoint_fixed_step_integration(@rate_func01,tspan,X0,h_ref);
-    [t_list_mi4,X_list_mi4,~, ~] = fixed_step_integration(@rate_func01,@implicit_midpoint_step,tspan,X0,h_ref);
     
+    %Plots comparing the closed-form solution to equation 5 with the numerical approximation (for a few different time step sizes). The idea is that each plot should depict that numerical approximation of x(t) getting more and more accurate as the step size gets smaller and smaller.
 
+    %plot_multi_h_ref()
+
+    %Plots comparing the numerical solutions to eqn. 5 for a time step of href = .38 and a separate plot for href = .45 (as detailed in the explicit vs. implicit stability section).
+
+    %plot_specific_href(0.38)
     
-    t = linspace(0, 10, 400);
-    figure(1);
-    plot(t, solution01(t),"k"), grid on
-    hold on
-    plot(t_list_fe, X_list_fe,"r")
-    plot(t_list_fe2, X_list_fe2,"b")
-    plot(t_list_fe3, X_list_fe3,"g")
-    plot(t_list_fe4, X_list_fe4,"y")
-    hold off
-    
-    figure(2);
-    plot(t, solution01(t),"k"), grid on
-    hold on
-    plot(t_list_me, X_list_me,"r")
-    plot(t_list_me2, X_list_me2,"b")
-    plot(t_list_me3, X_list_me3,"g")
-    plot(t_list_me4, X_list_me4,"y")
-    hold off
+    %plot_specific_href(0.45)
 
-    figure(3);
-    plot(t, solution01(t),"k"), grid on
-    hold on
-    plot(t_list_be, X_list_be,"r")
-    plot(t_list_be2, X_list_be2,"b")
-    plot(t_list_be3, X_list_be3,"g")
-    plot(t_list_be4, X_list_be4,"y")
-    hold off
-
-    figure(4);
-    plot(t, solution01(t),"k"), grid on
-    hold on
-    plot(t_list_mi, X_list_mi,"r")
-    plot(t_list_mi2, X_list_mi2,"b")
-    plot(t_list_mi3, X_list_mi3,"g")
-    plot(t_list_mi4, X_list_mi4,"y")
-    hold off
-
-    t_ref = 0.45;
-    local_trunc_error(@rate_func01, @solution01, t_ref);
+    %local_trunc_error(@rate_func01, @solution01, 0.3);
 
     global_trunc_error(@rate_func01, @solution01, 0, 50);
     
@@ -77,3 +22,4 @@ end
 function X = solution01(t)
 X = cos(t);
 end
+
