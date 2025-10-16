@@ -59,7 +59,7 @@ function global_trunc_error(rate_func_in, X, t_0, t_f)
     loglog(hh, kex_glob .*hh.^pex_glob, 'Color','g', 'LineWidth',1.5, 'DisplayName', sprintf('Explicit Midpoint fit: p=%.2f', pex_glob));
     xlabel('step size h');
     ylabel('global error at t_{0}{+}h');
-    title(sprintf('Global Truncation Error (explicit & exact) vs. h (t_{f} = %.3g)', t_f));
+    title(sprintf('Global Truncation Error (explicit with fit lines) vs. h (t_{f} = %.3g)', t_f));
     legend('Location','best');
     hold off
 
